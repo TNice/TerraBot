@@ -10,14 +10,5 @@ using Discord.WebSocket;
 
 namespace TerraBot
 {
-    //Not sure if nessisary
-    class Commands
-    {
-        public async Task Install(DiscordSocketClient client)
-        {
-            System.IServiceProvider serviceCollection;
-
-            
-        }
-    }
+    
 }

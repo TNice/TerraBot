@@ -1,7 +1,5 @@
 c:\users\tyler\documents\visual studio 2015\Projects\TerraBot\TerraBot\bin\Debug\TerraBot.exe.config
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\TerraBot.exe.config
-C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\x86\libsodium.dll
-C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\x64\libsodium.dll
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\TerraBot.exe
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\TerraBot.pdb
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\Discord.Net.Commands.dll
