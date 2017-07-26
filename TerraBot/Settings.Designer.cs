@@ -25,7 +25,7 @@ namespace TerraBot {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MzIxMTM0NjIyNzQwMDU0MDE3.DFp9hg.0_Y9nVS9cOzSwuUIm2dLELjSzzQ")]
         public string Token {
             get {
                 return ((string)(this["Token"]));

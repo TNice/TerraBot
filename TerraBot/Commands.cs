@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
+
 namespace TerraBot
 {
     //Not sure if nessisary
@@ -16,7 +17,7 @@ namespace TerraBot
         {
             System.IServiceProvider serviceCollection;
 
-            serviceCollection.AddSingleton(client);
+            
         }
     }
 }

@@ -35,10 +35,10 @@ namespace TerraBot
             commands = new CommandService();
             services = new ServiceCollection().BuildServiceProvider();
             client.Log += Log;
+
             await InstallCommands();
           
             //Add Event Overides Here
-            client.MessageReceived += MessageRecieved;
             client.MessageUpdated += MessageUpdated;
             client.Ready += () =>
             {
@@ -60,15 +60,6 @@ namespace TerraBot
             Console.WriteLine($"{message} -> {after}");
         }
 
-        private async Task MessageRecieved(SocketMessage message)
-        {
-            if (message.Content == "!ping")
-            {
-                await message.Channel.SendMessageAsync("Pong");
-            }
-           
-        }
-
         public async Task InstallCommands()
         {
             client.MessageReceived += HandelCommands;
@@ -77,20 +68,21 @@ namespace TerraBot
 
         private async Task HandelCommands(SocketMessage msgParam)
         {
-            var message = msgParam as SocketUserMessage;
-            if (message == null)
+            var msg = msgParam as SocketUserMessage;
+            if (msg == null)
                 return;
 
             int argPos = 0;
 
-            if (!(message.HasCharPrefix(Settings.Default.CmdPrefix, ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
+            if (!(msg.HasCharPrefix(Settings.Default.CmdPrefix, ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos)))
                 return;
 
-            var context = new CommandContext(client, message);
+            var context = new CommandContext(client, msg);
             var result = await commands.ExecuteAsync(context, argPos, services);
 
             if (!result.IsSuccess)
                 await context.Channel.SendMessageAsync(result.ErrorReason);
+
         }
 
         private Task Log(LogMessage msg)
