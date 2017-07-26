@@ -95,7 +95,6 @@
   <ItemGroup>
     <Compile Include="BotHandler.cs" />
     <Compile Include="CommandModule.cs" />
-    <Compile Include="Commands.cs" />
     <Compile Include="Points.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
