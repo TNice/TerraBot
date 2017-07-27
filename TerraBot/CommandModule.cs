@@ -27,7 +27,7 @@ namespace TerraBot
 
         static IAudioClient audioClient;
 
-        [Command("play ", RunMode = RunMode.Async), Summary("Joins Voice Channel")]
+        [Command("join", RunMode = RunMode.Async), Summary("Joins Voice Channel")]
         public async Task JoinCmd(IVoiceChannel channel = null)
         {
             var msg = Context.Message;
@@ -43,6 +43,13 @@ namespace TerraBot
         {
             await audioClient.StopAsync();
         }
+
+        private async Task SendAsync(IAudioClient client, string path)
+        {
+            var discord = client.CreateDirectPCMStream(AudioApplication.Mixed);
+            await discord.FlushAsync();
+        }
+        
 
     }
 }
