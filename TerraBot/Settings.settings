@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Token" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">MzIxMTM0NjIyNzQwMDU0MDE3.DFp9hg.0_Y9nVS9cOzSwuUIm2dLELjSzzQ</Value>
+      <Value Profile="(Default)">MjM0NjA4MDE5MjgxODA1MzEz.CyfSxg.zlCGB7ibemr7S5wuYtcplIwcAl8</Value>
     </Setting>
     <Setting Name="CmdPrefix" Type="System.Char" Scope="User">
       <Value Profile="(Default)">!</Value>

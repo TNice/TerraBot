@@ -28,3 +28,15 @@ C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Interactive.A
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\obj\Debug\TerraBot.csprojResolveAssemblyReference.cache
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\obj\Debug\TerraBot.exe
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\obj\Debug\TerraBot.pdb
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\Microsoft.Win32.Primitives.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.AppContext.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Console.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Globalization.Calendars.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.IO.Compression.ZipFile.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.IO.FileSystem.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.IO.FileSystem.Primitives.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Net.Sockets.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.Algorithms.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.Encoding.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.Primitives.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.X509Certificates.dll
