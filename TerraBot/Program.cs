@@ -14,16 +14,20 @@ namespace TerraBot
     class Program
     {
         public static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();
+            =>  new Program().MainAsync().GetAwaiter().GetResult();
 
         private DiscordSocketClient client;
         private CommandService commands;
         private IServiceProvider services;
 
+        PointService point;
+
         public async Task MainAsync()
         {
             //Found in Settings.settings file
             string token = Settings.Default.Token;
+
+            point = new PointService();
 
             //Initalize and Setup Client and Services
             var config = new DiscordSocketConfig
@@ -60,10 +64,11 @@ namespace TerraBot
             Console.WriteLine($"{message} -> {after}");
         }
 
+        //Find Out How to pass PointService to PointModule
         public async Task InstallCommands()
         {
             client.MessageReceived += HandelCommands;
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+            await commands.AddModulesAsync(Assembly.GetEntryAssembly());           
         }
 
         private async Task HandelCommands(SocketMessage msgParam)

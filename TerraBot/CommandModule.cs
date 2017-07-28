@@ -50,6 +50,32 @@ namespace TerraBot
             await discord.FlushAsync();
         }
         
+    }
 
+    [Group("points")]
+    public class PointModule : ModuleBase
+    {
+        private PointService point;
+
+        public PointModule(PointService points)
+        {
+            point = points;
+        }
+
+        [Command("add"), Summary("Adds Points To User")]
+        public async Task AddPoints(ulong user, ulong points)
+        {
+            var msg = Context.Message;
+
+            var member = Context.Guild.GetUserAsync(user);
+            if(member == null)
+            {
+                await msg.Channel.SendMessageAsync($"User With Id Of {user} Not Found!");
+                return;
+            }
+
+            int i = point.FindMember(user);
+            point.AddPoints(point.members[i], points);
+        }
     }
 }

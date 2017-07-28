@@ -40,3 +40,4 @@ C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryp
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.Encoding.dll
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.Primitives.dll
 C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\System.Security.Cryptography.X509Certificates.dll
+C:\Users\Tyler\Documents\GitHub\TerraBot\TerraBot\bin\Debug\Points.xml
