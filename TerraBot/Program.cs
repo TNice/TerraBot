@@ -20,14 +20,10 @@ namespace TerraBot
         private CommandService commands;
         private IServiceProvider services;
 
-        PointService point;
-
         public async Task MainAsync()
         {
             //Found in Settings.settings file
             string token = Settings.Default.Token;
-
-            point = new PointService();
 
             //Initalize and Setup Client and Services
             var config = new DiscordSocketConfig

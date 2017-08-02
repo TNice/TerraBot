@@ -55,11 +55,12 @@ namespace TerraBot
     [Group("points")]
     public class PointModule : ModuleBase
     {
-        private PointService point;
-
-        public PointModule(PointService points)
+        public static PointService point = new PointService();
+        [Command("load"), Summary("Adds All Members Of Server To Memory")]
+        public async Task LoadMembers()
         {
-            point = points;
+            point.AddAllMembers(Context.Guild as SocketGuild);
+            await Context.User.SendMessageAsync($"All Members In {Context.Guild.Name} Loaded To TerraBot!");
         }
 
         [Command("add"), Summary("Adds Points To User")]
@@ -75,6 +76,8 @@ namespace TerraBot
             }
 
             int i = point.FindMember(user);
+            if (i == -1)
+                await msg.Channel.SendMessageAsync($"User {member.Id} Not Found In DataBase");
             point.AddPoints(point.members[i], points);
         }
     }
