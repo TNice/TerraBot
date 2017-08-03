@@ -9,75 +9,79 @@ using System.Xml;
 namespace TerraBot
 {
 
-    public class PointService
+    public static class PointService
     {
         public struct Member
         {
             public string name;
             public ulong id;
             public double points;
+            public string server;
 
-            public Member(string name = "NULL", ulong id = 0, double points = 0)
+            public Member(string name = "NULL", ulong id = 0, double points = 0, string server = "NULL")
             {
                 this.name = name;
                 this.id = id;
                 this.points = points;
+                this.server = server;
             }
         }
 
-        XmlDocument doc = new XmlDocument();
-        public List<Member> members = new List<Member>();
+        static XmlDocument doc = new XmlDocument();
+        public static List<Member> members = new List<Member>();
+        private static List<SocketGuild> servers = new List<SocketGuild>();
 
-        public PointService()
+        public static void AddServer(SocketGuild serv)
         {
-            LoadPoints();
+            servers.Add(serv);
+        }
+
+        public static void PrintMembersToConsole()
+        {
+            foreach(Member m in members)
+            {
+                Console.WriteLine($"{m.server} {m.name} {m.id} {m.points}");
+            }
         }
 
         /// <summary>
         /// Loads Points.xml into the members list
         /// </summary>
-        public void LoadPoints()
-        {       
+        public static void LoadPoints()
+        {
             doc.Load("Points.xml");
-            Console.WriteLine("Loading Members");
             foreach (XmlNode node in doc.DocumentElement)
             {
-                Member m = new Member();
+                if (node.Name != "member") continue;
 
-                string name = node.Attributes["name"].InnerText;
-                string id = node.Attributes["id"].InnerText;         
-                string points = node.Attributes["points"].InnerText;
-
-                m.name = name;
-                m.id = UInt64.Parse(id);
-                m.points = Double.Parse(points);
-
-                members.Add(m);
+                members.Add(new Member(node.Attributes["name"].Value, UInt64.Parse(node.Attributes["id"].Value), Double.Parse(node.Attributes["points"].Value)));
             }
-            Console.WriteLine("Members Loaded");
+
         }
 
-        /// <summary>
+        /// <summary>)
         /// Saves All Members To Points.xml
         /// </summary>
-        public void SavePoints()
+        public static void SavePoints()
         {
             Console.WriteLine("Saveing Points To File");
             doc.Load("Points.xml");
             foreach (Member m in members)
             {
                 XmlNode node = MemberExist(m);
-                if(node == null)
+                if (node == null)
                 {
                     XmlElement element = doc.CreateElement("member");
                     element.SetAttribute("name", m.name);
                     element.SetAttribute("id", m.id.ToString());
                     element.SetAttribute("points", m.points.ToString());
+                    element.SetAttribute("server", m.server);
                     return;
                 }
 
                 node.Attributes["points"].Value = m.points.ToString();
 
+                doc.Save("Points.xml");
             }
         }
 
@@ -85,7 +89,7 @@ namespace TerraBot
         /// Saves Only One Member To Points.xml
         /// </summary>
         /// <param name="member">Member Struct To Save</param>
-        public void SavePoints(Member member)
+        public static void SavePoints(Member member)
         {
             XmlNode node = MemberExist(member);
             if(node == null)
@@ -94,11 +98,12 @@ namespace TerraBot
                 element.SetAttribute("name", member.name);
                 element.SetAttribute("id", member.id.ToString());
                 element.SetAttribute("points", member.points.ToString());
+                element.SetAttribute("server", member.server);
                 return;
             }
 
             node.Attributes["points"].Value = member.points.ToString();
-
+            doc.Save("Points.xml");
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace TerraBot
         /// <param name="name">Name of member(Nickname when passed by CommandModule)</param>
         /// <param name="id">Id of Member</param>
         /// <param name="points">Number of points the member has</param>
-        public void AddMember(string name, ulong id, ulong points = 0)
+        public static void AddMember(string name, ulong id, ulong points = 0)
         {
             if (MemberExist(id)) return;
 
@@ -121,25 +126,25 @@ namespace TerraBot
         }
 
         /// <summary>
-        /// Adds All Members From A Server (Also Saves To xml)
+        /// Adds All Members From A Server (Does Not Save To Xml)
         /// </summary>
         /// <param name="serv">Server to  add all mebers from. Ideally Passed By CommandModule</param>
-        public void AddAllMembers(SocketGuild serv)
+        public static void AddAllMembers(SocketGuild serv)
         {
             foreach(SocketGuildUser u in serv.Users)
             {
-                if (FindMember(u.Id) != -1)
+                if (MemberExist(u.Id))
                     continue;
 
                 Member newMem = new Member();
-                newMem.name = u.Nickname;
+                newMem.name = u.Username;
                 newMem.id = u.Id;
                 newMem.points = 0;
+                newMem.server = serv.Name;
 
                 members.Add(newMem);
             }
-
-            SavePoints();
+            Console.WriteLine($"All Members In {serv.Name} Loaded To Memory");
         }
 
         /// <summary>
@@ -147,7 +152,7 @@ namespace TerraBot
         /// </summary>
         /// <param name="member">Member to give points(use GetMember to pass a member through)</param>
         /// <param name="points">Number of Points To Get</param>
-        public void AddPoints(Member member, double points)
+        public static void AddPoints(Member member, double points)
         {
             member.points += points;
         }
@@ -157,7 +162,7 @@ namespace TerraBot
         /// </summary>
         /// <param name="m">Memeber as a struct Member</param>
         /// <returns>Node Of Member</returns>
-        private XmlNode MemberExist(Member m)
+        private static XmlNode MemberExist(Member m)
         {
             doc.Load("Points.xml");
             foreach(XmlNode node in doc.DocumentElement)
@@ -173,7 +178,7 @@ namespace TerraBot
         /// </summary>
         /// <param name="id">Id of member to search</param>
         /// <returns>true if member is found</returns>
-        private bool MemberExist(ulong id)
+        private static bool MemberExist(ulong id)
         {
             doc.Load("Points.xml");
             foreach (XmlNode node in doc.DocumentElement)
@@ -188,7 +193,7 @@ namespace TerraBot
         /// </summary>
         /// <param name="id">Member id to search</param>
         /// <returns>integer index of member in member list</returns>
-        public int FindMember(ulong id)
+        public static int FindMember(ulong id)
         {
             int count = 0;
             foreach (Member m in members)
@@ -205,7 +210,7 @@ namespace TerraBot
         /// </summary>
         /// <param name="id">id of member to search</param>
         /// <returns>Member struct from members list</returns>
-        public Member GetMember(ulong id)
+        public static Member GetMember(ulong id)
         {
             foreach(Member m in members)
             {

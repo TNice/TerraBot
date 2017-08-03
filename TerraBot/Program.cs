@@ -24,7 +24,7 @@ namespace TerraBot
         {
             //Found in Settings.settings file
             string token = Settings.Default.Token;
-
+            PointService.LoadPoints();
             //Initalize and Setup Client and Services
             var config = new DiscordSocketConfig
             {
@@ -40,6 +40,7 @@ namespace TerraBot
           
             //Add Event Overides Here
             client.MessageUpdated += MessageUpdated;
+            client.GuildAvailable += Client_GuildAvailable;
             client.Ready += () =>
             {
                 Console.WriteLine("Bot Connected!");
@@ -52,6 +53,12 @@ namespace TerraBot
 
 
             await Task.Delay(-1);
+        }
+
+        private Task Client_GuildAvailable(SocketGuild arg)
+        {
+            PointService.AddAllMembers(arg);
+            return Task.CompletedTask;
         }
 
         private async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel)

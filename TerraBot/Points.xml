@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <root>
 
-  <member name ="User1" id ="0" points ="220"></member>
-  <member name ="User2" id ="1" points ="174"></member>
-  <member name ="User3" id ="2" points ="1255"></member>
-  <member name ="User4" id ="3" points ="256698"></member>
+  <member name ="User1" id ="0" points ="220" server ="none"></member>
+  <member name ="User2" id ="1" points ="174" server ="none"></member>
+  <member name ="User3" id ="2" points ="1255" server ="none"></member>
+  <member name ="User4" id ="3" points ="256698" server ="none"></member>
   
 </root>

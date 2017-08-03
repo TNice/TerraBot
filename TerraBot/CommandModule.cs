@@ -10,6 +10,7 @@ using Discord;
 
 namespace TerraBot
 {
+
     public class TestingModule : ModuleBase
     {
 
@@ -55,15 +56,29 @@ namespace TerraBot
     [Group("points")]
     public class PointModule : ModuleBase
     {
-        public static PointService point = new PointService();
-        [Command("load"), Summary("Adds All Members Of Server To Memory")]
+
+        [Command("load"), Alias("l"), Summary("Adds All Members Of Server To Memory")]
         public async Task LoadMembers()
         {
-            point.AddAllMembers(Context.Guild as SocketGuild);
+            PointService.AddAllMembers(Context.Guild as SocketGuild);
             await Context.User.SendMessageAsync($"All Members In {Context.Guild.Name} Loaded To TerraBot!");
         }
 
-        [Command("add"), Summary("Adds Points To User")]
+        [Command("save")]
+        public async Task SaveMembers()
+        {
+            PointService.SavePoints();
+            await Context.Channel.SendMessageAsync("Points Service Saved To File");
+        }
+
+        [Command("print")]
+        public async Task PrintPointsToConsole()
+        {
+            PointService.PrintMembersToConsole();
+            await Context.User.SendMessageAsync("Users Printed To Console");
+        }
+
+        [Command("add"), Alias("a"), Summary("Adds Points To User")]
         public async Task AddPoints(ulong user, ulong points)
         {
             var msg = Context.Message;
@@ -75,10 +90,16 @@ namespace TerraBot
                 return;
             }
 
-            int i = point.FindMember(user);
+            int i = PointService.FindMember(user);
             if (i == -1)
                 await msg.Channel.SendMessageAsync($"User {member.Id} Not Found In DataBase");
-            point.AddPoints(point.members[i], points);
+            PointService.AddPoints(PointService.members[i], points);
+        }
+
+        [Command("remove"), Alias("rmv", "r"), Summary("Removes Points")]
+        public async Task RemovePoints(ulong user, ulong points)
+        {
+            await Context.Channel.SendMessageAsync("Not Implamented Yet!");
         }
     }
 }
