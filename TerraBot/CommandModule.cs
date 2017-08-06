@@ -22,7 +22,7 @@ namespace TerraBot
         
     }
 
-
+    
     public class AudioModule : ModuleBase
     {
 
@@ -56,30 +56,44 @@ namespace TerraBot
     [Group("points")]
     public class PointModule : ModuleBase
     {
-
-        [Command("load"), Alias("l"), Summary("Adds All Members Of Server To Memory")]
+        [Command("load")]
         public async Task LoadMembers()
         {
-            PointService.AddAllMembers(Context.Guild as SocketGuild);
-            await Context.User.SendMessageAsync($"All Members In {Context.Guild.Name} Loaded To TerraBot!");
+            MemberService.LoadMembers();
+            await Context.Channel.SendMessageAsync("Members Loaded");
         }
 
         [Command("save")]
         public async Task SaveMembers()
         {
-            PointService.SavePoints();
+            MemberService.SaveMembers();
             await Context.Channel.SendMessageAsync("Points Service Saved To File");
         }
 
         [Command("print")]
         public async Task PrintPointsToConsole()
         {
-            PointService.PrintMembersToConsole();
-            await Context.User.SendMessageAsync("Users Printed To Console");
+            Console.WriteLine("Printing Members...");
+            MemberService.PrintList();
+            await Context.Channel.SendMessageAsync("Users Printed To Console");
+        }
+
+        [Command("create"), Alias("c"), Summary("Create Fake Member To List To Test(DEBUG USE ONLY)"), RequireUserPermission(GuildPermission.Administrator)]
+        public async Task CreateMem(string name, ulong id)
+        {
+            MemberService.AddMember(MemberService.CreateMember(name, id, 0, Context.Guild.Id));
+            await Context.Channel.SendMessageAsync("Fake Member Created");
+        }
+
+        [Command("delete"), Alias("d"), Summary("DEBUG ONLY"), RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DeleteMem(ulong id)
+        {
+            MemberService.RemoveMember(MemberService.FindMember(id));
+            await Context.Channel.SendMessageAsync("Member Deleted!");
         }
 
         [Command("add"), Alias("a"), Summary("Adds Points To User")]
-        public async Task AddPoints(ulong user, ulong points)
+        public async Task AddPoints(ulong user, double points)
         {
             var msg = Context.Message;
 
@@ -90,15 +104,28 @@ namespace TerraBot
                 return;
             }
 
-            int i = PointService.FindMember(user);
+            int i = MemberService.FindMember(user);
             if (i == -1)
                 await msg.Channel.SendMessageAsync($"User {member.Id} Not Found In DataBase");
-            PointService.AddPoints(PointService.members[i], points);
+            MemberService.AddPoints(i, points);
         }
 
         [Command("remove"), Alias("rmv", "r"), Summary("Removes Points")]
-        public async Task RemovePoints(ulong user, ulong points)
+        public async Task RemovePoints(ulong user, double points)
         {
+            var msg = Context.Message;
+
+            var member = Context.Guild.GetUserAsync(user);
+            if (member == null)
+            {
+                await msg.Channel.SendMessageAsync($"User With Id Of {user} Not Found!");
+                return;
+            }
+
+            int i = MemberService.FindMember(user);
+            if (i == -1)
+                await msg.Channel.SendMessageAsync($"User {member.Id} Not Found In DataBase");
+            MemberService.AddPoints(i, (-1 * points));
             await Context.Channel.SendMessageAsync("Not Implamented Yet!");
         }
     }

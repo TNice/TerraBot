@@ -23,8 +23,8 @@ namespace TerraBot
         public async Task MainAsync()
         {
             //Found in Settings.settings file
-            string token = Settings.Default.Token;
-            PointService.LoadPoints();
+            string token = Properties.Settings.Default.Token;
+
             //Initalize and Setup Client and Services
             var config = new DiscordSocketConfig
             {
@@ -37,10 +37,14 @@ namespace TerraBot
             client.Log += Log;
 
             await InstallCommands();
-          
+
             //Add Event Overides Here
+            client.MessageReceived += GiveMessagePoints; ;
             client.MessageUpdated += MessageUpdated;
             client.GuildAvailable += Client_GuildAvailable;
+            client.UserJoined += Client_UserJoined;
+            client.UserLeft += Client_UserLeft;
+            client.LeftGuild += Client_LeftGuild;
             client.Ready += () =>
             {
                 Console.WriteLine("Bot Connected!");
@@ -55,9 +59,74 @@ namespace TerraBot
             await Task.Delay(-1);
         }
 
-        private Task Client_GuildAvailable(SocketGuild arg)
+        private Task Client_LeftGuild(SocketGuild serv)
         {
-            PointService.AddAllMembers(arg);
+            foreach(var m in serv.Users)
+            {
+                int i = MemberService.FindMember(m.Id, serv.Id);
+                if (i != -1)
+                    MemberService.RemoveMember(i);
+            }
+            return Task.CompletedTask;
+        }
+
+        private Task Client_UserLeft(SocketGuildUser mem)
+        {
+            int i = MemberService.FindMember(mem.Id, mem.Guild.Id);
+            if (i != -1)
+                MemberService.RemoveMember(i);
+            return Task.CompletedTask;
+        }
+
+        private Task Client_UserJoined(SocketGuildUser mem)
+        {
+            var temp = MemberService.CreateMember(mem.Username, mem.Id, 0, mem.Guild.Id);
+            if (!MemberService.MemberExists(temp))
+                MemberService.AddMember(temp);
+            return Task.CompletedTask;
+        }
+
+        private Task GiveMessagePoints(SocketMessage msg)
+        {
+            var context = new CommandContext(client, msg as SocketUserMessage);
+            var m = msg.Content;
+            if (m[0] == '!')
+                return Task.CompletedTask;
+
+            double p = 0;
+            if (m.Length > 75)
+                p = 2;
+            else if (m.Length > 30)
+                p = 1;
+            else if (m.Length > 25)
+                p = 0.5;
+            else if (m.Length > 20)
+                p = 0.25;
+            else if (m.Length > 15)
+                p = 0.1;
+
+            foreach(var u in msg.MentionedUsers)
+            {
+                p += 0.03;
+            }
+           
+            MemberService.AddPoints(MemberService.FindMember(msg.Author.Id, context.Guild.Id), p);
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildAvailable(SocketGuild serv)
+        {
+            if(MemberService.ListSize() == 0)
+            {
+                MemberService.LoadMembers();
+            }
+            foreach(var u in serv.Users)
+            {
+                var mem = MemberService.CreateMember(u.Username, u.Id, 0, serv.Id);
+                if (MemberService.MemberExists(mem))
+                    continue;
+                MemberService.AddMember(mem);
+            }
             return Task.CompletedTask;
         }
 
@@ -67,7 +136,6 @@ namespace TerraBot
             Console.WriteLine($"{message} -> {after}");
         }
 
-        //Find Out How to pass PointService to PointModule
         public async Task InstallCommands()
         {
             client.MessageReceived += HandelCommands;
@@ -82,7 +150,7 @@ namespace TerraBot
 
             int argPos = 0;
 
-            if (!(msg.HasCharPrefix(Settings.Default.CmdPrefix, ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos)))
+            if (!(msg.HasCharPrefix(Properties.Settings.Default.CmdPrefix, ref argPos) || msg.HasMentionPrefix(client.CurrentUser, ref argPos)))
                 return;
 
             var context = new CommandContext(client, msg);
