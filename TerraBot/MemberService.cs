@@ -16,9 +16,10 @@ namespace TerraBot.Services
             public ulong id;
             public double points;
             public ulong server;
+            public string rank;
 
             public int tickets; //Will Be Used For A Lotto
-            public int voteWeight; //Poll will favor more active members
+            public float voteWeight; //Poll will favor more active members
 
             public Member(string name = "NULL", ulong id = 0, double points = 0, ulong server = 0)
             {
@@ -114,6 +115,7 @@ namespace TerraBot.Services
             {
                 Console.WriteLine("Ranks.txt Not Found Check File Path! The Settings.settings file can be edited with notepad++");
             }
+            PrintRanks();
             Console.WriteLine("Ranks Loaded");
         }
 
@@ -126,6 +128,35 @@ namespace TerraBot.Services
             {
                 Console.WriteLine($"Rank {r.Key} requires {r.Value}");
             }
+        }
+
+        /// <summary>
+        /// Gets Rank Dictionary From Service
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, double> GetRanks()
+        {
+            return ranks;
+        } 
+
+        /// <summary>
+        /// Updates Role Based On Rank
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="server"></param>
+        public static void UpdateRank(ulong id, ulong server)
+        {
+            int i = FindMember(id, server);        
+            foreach(var r in ranks)
+            {
+                if (mList[i].points >= r.Value)
+                {
+                    mList[i].rank = r.Key;
+                    break;
+                }             
+            }
+
+            Program.UpdateRole(id, server, mList[i].rank);
         }
 
         /// <summary>
@@ -210,6 +241,20 @@ namespace TerraBot.Services
         }
 
         /// <summary>
+        /// Gets Member From List
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="server"></param>
+        /// <returns></returns>
+        public static Member GetMember(ulong id, ulong server = 0)
+        {
+            if (server == 0)
+                return mList[FindMember(id)];
+            else
+                return mList[FindMember(id, server)];
+        }
+
+        /// <summary>
         /// Adds Points To Member
         /// </summary>
         /// <param name="i">Index Of User In List</param>
@@ -222,12 +267,55 @@ namespace TerraBot.Services
                 return false;
             }
             mList[i].points += points;
+            SetVoteWeight(i);
+            UpdateRank(mList[i].id, mList[i].server);
             return true;
         }
 
-        public static void SortByPoints()
+        /// <summary>
+        /// Sorts The Member List
+        /// </summary>
+        public static class Sort
         {
+            /// <summary>
+            /// Sorts mList By Points
+            /// </summary>
+            public static void Points()
+            {
 
+            }
+
+            /// <summary>
+            /// Sorts mList By The Servers
+            /// </summary>
+            public static void Servers()
+            {
+
+            }
+
+            /// <summary>
+            /// Sorts List Alphabetically
+            /// </summary>
+            public static void Alpha()
+            {
+
+            }
+
+            /// <summary>
+            /// Sorts By Alpha and Servers
+            /// </summary>
+            public static void AlphaServers()
+            {
+
+            }
+
+            /// <summary>
+            /// Sorts By Points and Servers
+            /// </summary>
+            public static void PointsServers()
+            {
+
+            }
         }
 
         /// <summary>
@@ -249,14 +337,14 @@ namespace TerraBot.Services
         /// <summary>
         /// Controlls brodcast of usernames and points to discord
         /// </summary>
-        public static class SendPointsToClient
+        public static class SendMsgToClient
         {
             /// <summary>
             /// Sends List Of All Members Points To The Server
             /// </summary>
             /// <param name="server"></param>
             /// <returns>List of usersnames and their points as a string</returns>
-            public static List<string> All(ulong server)
+            public static List<string> AllPoints(ulong server)
             {
                 List<string> lines = new List<string>();
                 foreach (var m in GetMembersInServer(server))
@@ -272,7 +360,7 @@ namespace TerraBot.Services
             /// <param name="id"></param>
             /// <param name="server"></param>
             /// <returns>String containing points and username</returns>
-            public static string Single(ulong id, ulong server)
+            public static string SinglePoints(ulong id, ulong server)
             {
                 string msg = "";
                 foreach(var m in mList)
@@ -281,6 +369,16 @@ namespace TerraBot.Services
                         msg = $"{m.name} - {m.points}";
                 }
                 return msg;
+            }
+
+            public static List<string> AllRanks(ulong server)
+            {
+                throw new NotImplementedException();
+            }
+
+            public static string SingleRanks(ulong id, ulong server)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -333,9 +431,13 @@ namespace TerraBot.Services
             }
         }
 
-        public static void SetVoteWeight()
+        /// <summary>
+        /// Sets Weight Of Members Vote Based On Activity
+        /// </summary>
+        /// <param name="i"></param>
+        public static void SetVoteWeight(int i)
         {
-            
+            mList[i].voteWeight = (float)((mList[i].points / 500) + 1);
         }
 
         /// <summary>
@@ -345,8 +447,13 @@ namespace TerraBot.Services
         {
             foreach(var m in mList)
             {
-                Console.WriteLine("Name: {0} Id: {1} ServerId: {2} Points: {3}", m.name, m.id, m.server, m.points);
+                Console.WriteLine("Name: {0} Id: {1} ServerId: {2} Points: {3} Rank: {4} Vote Weight: {5}", m.name, m.id, m.server, m.points, m.rank, m.voteWeight);
             }
+        }
+
+        public static void Vote(int poll, int option)
+        {
+            throw new NotImplementedException();
         }
 
     }

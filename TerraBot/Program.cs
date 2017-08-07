@@ -17,7 +17,7 @@ namespace TerraBot
         public static void Main(string[] args)
             =>  new Program().MainAsync().GetAwaiter().GetResult();
 
-        private DiscordSocketClient client;
+        private static DiscordSocketClient client;
         private CommandService commands;
         private IServiceProvider services;
 
@@ -70,6 +70,7 @@ namespace TerraBot
             await Task.Delay(-1);
         }
 
+        //Funcions Linked To Events
         private Task Client_LeftGuild(SocketGuild serv)
         {
             foreach(var m in serv.Users)
@@ -178,5 +179,50 @@ namespace TerraBot
             return Task.CompletedTask;
         }
        
+        //Utility Functions
+        /// <summary>
+        /// Updates User Role Based On Rank And Server
+        /// </summary>
+        /// <param name="uId">user id</param>
+        /// <param name="sId">server id</param>
+        /// <param name="rank">rank name</param>
+        public static async void UpdateRole(ulong uId, ulong sId, string rank)
+        {
+            var server = client.GetGuild(sId);
+            var user = server.GetUser(uId);
+            SocketRole role = null;
+            foreach(var r in server.Roles)
+            {
+                if (r.Name == rank)
+                    role = r;  
+            }
+
+            var ranks = MemberService.GetRanks();
+            foreach(var r in ranks)
+            {
+                SocketRole temp = null;
+                foreach (var ra in server.Roles)
+                {
+                    if (ra.Name == r.Key)
+                    {
+                        temp = ra;
+                        break;
+                    }
+                }
+
+                if (temp == null) continue;
+
+                if(user.Roles.Contains(temp))
+                {
+                   await user.RemoveRoleAsync(temp);
+                }
+            }
+
+            if (role != null && !user.Roles.Contains(role))
+            {
+                await user.AddRoleAsync(role);
+            }
+        }
+
     }
 }

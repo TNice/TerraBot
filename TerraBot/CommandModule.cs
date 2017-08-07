@@ -105,7 +105,7 @@ namespace TerraBot
                 return;
             }
 
-            int i = MemberService.FindMember(user);
+            int i = MemberService.FindMember(user, Context.Guild.Id);
             if (i == -1)
                 await msg.Channel.SendMessageAsync($"User {member.Id} Not Found In DataBase");
             MemberService.AddPoints(i, points);

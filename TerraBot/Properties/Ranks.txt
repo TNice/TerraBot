@@ -1,2 +1,8 @@
-﻿Test 25
-Test Rank 5
+﻿Super Active 400
+Prettey Active 200
+In Between 75
+Mostly Inactive 50
+Bad Lurker 25
+Lurker 15
+Pro Lurker 5
+Inactive 0
