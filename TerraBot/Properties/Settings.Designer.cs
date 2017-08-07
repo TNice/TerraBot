@@ -55,5 +55,17 @@ namespace TerraBot.Properties {
                 this["Members"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\tyler\\Documents\\GitHub\\TerraBot\\TerraBot\\Properties\\Ranks.txt")]
+        public string RanksDoc {
+            get {
+                return ((string)(this["RanksDoc"]));
+            }
+            set {
+                this["RanksDoc"] = value;
+            }
+        }
     }
 }

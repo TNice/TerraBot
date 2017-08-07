@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using TerraBot.Services;
 
 namespace TerraBot
 {
@@ -47,13 +48,23 @@ namespace TerraBot
             client.LeftGuild += Client_LeftGuild;
             client.Ready += () =>
             {
+                MemberService.LoadRanks();
                 Console.WriteLine("Bot Connected!");
                 return Task.CompletedTask;
             };
 
             //Login
-            await client.LoginAsync(TokenType.Bot, token);
-            await client.StartAsync();
+            try
+            {
+                await client.LoginAsync(TokenType.Bot, token);
+                await client.StartAsync();
+            }
+            catch (Exception)
+            {
+                MemberService.LoadRanks();
+                MemberService.PrintRanks();
+                Console.WriteLine("Could Not Login! Cheack Internet and Restart Program!");
+            }
 
 
             await Task.Delay(-1);

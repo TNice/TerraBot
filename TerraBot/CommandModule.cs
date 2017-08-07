@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord.Audio;
 using Discord.WebSocket;
 using Discord;
+using TerraBot.Services;
 
 namespace TerraBot
 {
