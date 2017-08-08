@@ -106,7 +106,13 @@ namespace TerraBot
                 return Task.CompletedTask;
 
             double p = 0;
-            if (m.Length > 75)
+
+            if (m.Length > 10)
+                p = 1;
+            if (m.Length > 5)
+                p = 0.5;
+
+           /* if (m.Length > 75)
                 p = 2;
             else if (m.Length > 30)
                 p = 1;
@@ -115,7 +121,7 @@ namespace TerraBot
             else if (m.Length > 20)
                 p = 0.25;
             else if (m.Length > 15)
-                p = 0.1;
+                p = 0.1;*/
 
             foreach(var u in msg.MentionedUsers)
             {

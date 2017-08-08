@@ -18,6 +18,8 @@ namespace TerraBot.Services
             public ulong server;
             public string rank;
 
+            public bool msgSent;
+
             public int tickets; //Will Be Used For A Lotto
             public float voteWeight; //Poll will favor more active members
 
@@ -27,6 +29,7 @@ namespace TerraBot.Services
                 this.id = id;
                 this.points = points;
                 this.server = server;
+                this.timeOfLastMsg = new DateTime();
             }
         }
 
@@ -76,6 +79,26 @@ namespace TerraBot.Services
             catch(Exception)
             {
                 Console.WriteLine("Members Unable To Load");
+            }
+        }
+
+        /// <summary>
+        /// Sets That User Sent A Message That Day
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="server">server id</param>
+        public static void SetMessageSentBool(ulong id, ulong server)
+        {
+            int i = FindMember(id, server);
+            mList[i].msgSent = true;
+        }
+
+        public static void CheckActivity()
+        {
+            foreach(var m in mList)
+            {
+                if(!m.msgSent)
+                    m.points -= 
             }
         }
 
