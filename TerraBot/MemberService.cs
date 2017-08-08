@@ -6,7 +6,6 @@ using System.IO;
 
 namespace TerraBot.Services
 {
-
     public static class MemberService
     {
         [Serializable()]
@@ -29,7 +28,6 @@ namespace TerraBot.Services
                 this.id = id;
                 this.points = points;
                 this.server = server;
-                this.timeOfLastMsg = new DateTime();
             }
         }
 
@@ -93,13 +91,19 @@ namespace TerraBot.Services
             mList[i].msgSent = true;
         }
 
+        /// <summary>
+        /// Upadates Points If Person Has Been Inactive
+        /// </summary>
         public static void CheckActivity()
         {
             foreach(var m in mList)
             {
-                if(!m.msgSent)
-                    m.points -= 
+                if (!m.msgSent)
+                    m.points -= 2;
+                else
+                    m.msgSent = false;
             }
+            Console.WriteLine("Checked Activity");
         }
 
         //Need to make the url universal

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TerraBot.Services;
+using System.Timers;
 
 namespace TerraBot
 {
@@ -25,6 +26,7 @@ namespace TerraBot
         {
             //Found in Settings.settings file
             string token = Properties.Settings.Default.Token;
+            Timer dayTimer = new Timer(86400000);
 
             //Initalize and Setup Client and Services
             var config = new DiscordSocketConfig
@@ -35,6 +37,7 @@ namespace TerraBot
             client = new DiscordSocketClient(config);
             commands = new CommandService();
             services = new ServiceCollection().BuildServiceProvider();
+            
             client.Log += Log;
 
             await InstallCommands();
@@ -46,8 +49,10 @@ namespace TerraBot
             client.UserJoined += Client_UserJoined;
             client.UserLeft += Client_UserLeft;
             client.LeftGuild += Client_LeftGuild;
+            dayTimer.Elapsed += (s, e) => MemberService.CheckActivity();
             client.Ready += () =>
             {
+                dayTimer.Start();
                 MemberService.LoadRanks();
                 Console.WriteLine("Bot Connected!");
                 return Task.CompletedTask;
